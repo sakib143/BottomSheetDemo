@@ -15,16 +15,17 @@
         <entry key="app/src/main/res/drawable/selected_pager_dot.xml" value="0.116" />
         <entry key="app/src/main/res/drawable/tab_pager_selector.xml" value="0.116" />
         <entry key="app/src/main/res/drawable/tabs_selector.xml" value="0.116" />
+        <entry key="app/src/main/res/drawable/text_bg.xml" value="0.142" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.13020833333333334" />
-        <entry key="app/src/main/res/layout/adapter_gift.xml" value="0.12916666666666668" />
+        <entry key="app/src/main/res/layout/adapter_gift.xml" value="0.2" />
         <entry key="app/src/main/res/layout/bottomsheet.xml" value="0.16" />
-        <entry key="app/src/main/res/layout/fragment_bottom_sheet.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/fragment_bottom_sheet.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_collection_object.xml" value="0.13020833333333334" />
         <entry key="app/src/main/res/layout/fragment_gift_list.xml" value="0.2" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
