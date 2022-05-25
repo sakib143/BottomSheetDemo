@@ -33,7 +33,7 @@ public class GiftListFragment  extends Fragment {
         Bundle args = getArguments();
         Log.d("==>  " , "onViewCreated: ??? " + Integer.toString(args.getInt(ARG_OBJECT)) );
         for (int i = 0; i < 10; i++) {
-            alGifts.add(new GiftModel("Positon " + i, false,-1));
+            alGifts.add(new GiftModel("Position " + i, false,-1));
         }
 
         rvGifts = view.findViewById(R.id.rvGifts);

@@ -13,6 +13,7 @@
         android:id="@+id/open_bottom_sheet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:text="Open Modal Bottom Sheet" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>
