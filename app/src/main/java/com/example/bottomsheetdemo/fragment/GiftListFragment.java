@@ -1,16 +1,19 @@
-package com.example.bottomsheetdemo;
+package com.example.bottomsheetdemo.fragment;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.bottomsheetdemo.R;
+import com.example.bottomsheetdemo.adapter.GiftAdapter;
+import com.example.bottomsheetdemo.model.GiftModel;
 
 import java.util.ArrayList;
 
@@ -32,7 +35,7 @@ public class GiftListFragment  extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         Bundle args = getArguments();
         Log.d("==>  " , "onViewCreated: ??? " + Integer.toString(args.getInt(ARG_OBJECT)) );
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 8; i++) {
             alGifts.add(new GiftModel("Position " + i, false,-1));
         }
 

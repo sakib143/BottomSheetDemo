@@ -1,4 +1,4 @@
-package com.example.bottomsheetdemo;
+package com.example.bottomsheetdemo.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +7,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.bottomsheetdemo.model.GiftModel;
+import com.example.bottomsheetdemo.R;
+
 import java.util.ArrayList;
 
 

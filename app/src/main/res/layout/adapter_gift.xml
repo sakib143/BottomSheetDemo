@@ -4,13 +4,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="@dimen/_10sdp"
-    android:layout_margin="@dimen/_10ssp">
+    android:padding="@dimen/_5sdp"
+    android:layout_margin="@dimen/_5ssp">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivImages"
-        android:layout_width="@dimen/_50sdp"
-        android:layout_height="@dimen/_50sdp"
+        android:layout_width="@dimen/_60sdp"
+        android:layout_height="@dimen/_60sdp"
         android:scaleType="fitStart"
         android:background="@drawable/ic_bell"
         />

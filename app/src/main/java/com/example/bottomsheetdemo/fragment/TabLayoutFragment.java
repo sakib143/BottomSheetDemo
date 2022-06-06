@@ -1,42 +1,45 @@
-package com.example.bottomsheetdemo;
+package com.example.bottomsheetdemo.fragment;
+
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.example.bottomsheetdemo.R;
+import com.example.bottomsheetdemo.adapter.GiftAdapter;
+import com.example.bottomsheetdemo.model.GiftModel;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-public class BottomSheetDialog  extends BottomSheetDialogFragment {
+import java.util.ArrayList;
+
+public class TabLayoutFragment  extends Fragment  {
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_tab_layout, container, false);
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable
-            ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_bottom_sheet, container, false);
-
-        TabLayout tabLayout = v.findViewById(R.id.tab_layout);
-        TabLayout into_tab_layout = v.findViewById(R.id.into_tab_layout);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         DemoCollectionAdapter demoCollectionAdapter = new DemoCollectionAdapter(this);
-
-        ViewPager2  viewPager = v.findViewById(R.id.pager);
+        ViewPager2  viewPager = view.findViewById(R.id.pager);
         viewPager.setAdapter(demoCollectionAdapter);
 
-        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> tab.setText("OBJECT " + (position + 1))).attach();
+        TabLayout into_tab_layout = view.findViewById(R.id.into_tab_layout);
 
         new TabLayoutMediator(into_tab_layout,viewPager, (tab, position) -> tab.setText("")).attach();
-
-        return v;
     }
 
     public class DemoCollectionAdapter extends FragmentStateAdapter {
@@ -59,7 +62,8 @@ public class BottomSheetDialog  extends BottomSheetDialogFragment {
 
         @Override
         public int getItemCount() {
-            return 4;
+            return 3;
         }
     }
+
 }

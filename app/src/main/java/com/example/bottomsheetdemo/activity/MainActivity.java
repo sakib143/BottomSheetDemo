@@ -1,15 +1,13 @@
-package com.example.bottomsheetdemo;
+package com.example.bottomsheetdemo.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.example.bottomsheetdemo.R;
+import com.example.bottomsheetdemo.fragment.BottomSheetDialog;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -45,12 +45,10 @@
                 app:tabSelectedTextColor="@color/white"
                 app:tabTextColor="@color/grey" />
 
-            <androidx.viewpager2.widget.ViewPager2
+            <com.example.bottomsheetdemo.MyViewPager
                 android:id="@+id/pager"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                android:layout_height="match_parent" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -62,8 +60,6 @@
             app:tabBackground="@drawable/tab_pager_selector"
             app:tabGravity="center"
             app:tabIndicatorHeight="0dp"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:layout_marginBottom="@dimen/_10sdp"
             android:background="@color/black"/>
 
         <RelativeLayout

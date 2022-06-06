@@ -1,4 +1,4 @@
-package com.example.bottomsheetdemo;
+package com.example.bottomsheetdemo.model;
 
 public class GiftModel {
 
