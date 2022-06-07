@@ -10,16 +10,26 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import com.example.bottomsheetdemo.MyViewPager;
 import com.example.bottomsheetdemo.R;
+import com.example.bottomsheetdemo.model.MainModel;
+import com.example.bottomsheetdemo.model.SubModel;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.ArrayList;
+
 
 public class BottomSheetDialog  extends BottomSheetDialogFragment {
+
+    private ArrayList<MainModel> alMain = new ArrayList<>();
+    private ArrayList<SubModel> alSubList = new ArrayList<>();
+    private ArrayList<String> alTotalCoins = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable
             ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_bottom_sheet, container, false);
+
+        loadArrayList();
 
         TabLayout tabLayout = v.findViewById(R.id.tab_layout);
 
@@ -30,6 +40,33 @@ public class BottomSheetDialog  extends BottomSheetDialogFragment {
 
         tabLayout.setupWithViewPager(viewPager);
         return v;
+    }
+
+    private void loadArrayList() {
+        int totalObj = Math.round(14/4);
+        int currentObjs = 1;
+
+        for(int i = 0; i < 15; i++) {
+
+            alSubList.add(new SubModel("Position is " + i ));
+
+            if(currentObjs <= totalObj){
+                if(alSubList.size() == 4) {
+                    currentObjs++;
+                    alMain.add(new MainModel(alSubList,"Title " + i ));
+                    alSubList = new ArrayList<>();
+                }
+            }else {
+                if(i == 14){
+                    alMain.add(new MainModel(alSubList, "Title " + i ));
+                }
+            }
+        }
+
+        //Load total coins
+        for (int i = 1; i < 5; i++) {
+            alTotalCoins.add(" " + i );
+        }
     }
 
 
@@ -50,12 +87,13 @@ public class BottomSheetDialog  extends BottomSheetDialogFragment {
 
         @Override
         public int getCount() {
-            return 4;
+            return alMain.size();
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return "OBJECT " + (position + 1);
+//            return "OBJECT " + (position + 1);
+            return alMain.get(position).getTabTitle();
         }
     }
 
