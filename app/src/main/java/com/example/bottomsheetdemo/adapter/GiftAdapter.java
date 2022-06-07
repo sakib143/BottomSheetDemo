@@ -8,18 +8,18 @@ import android.widget.RelativeLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.bottomsheetdemo.model.GiftModel;
 import com.example.bottomsheetdemo.R;
+import com.example.bottomsheetdemo.model.SubModel;
 
-import java.util.ArrayList;
+import java.util.List;
 
 
 public class GiftAdapter extends RecyclerView.Adapter<GiftAdapter.ViewHolder> {
 
-    private ArrayList<GiftModel> alGifts;
+    private List<SubModel> alGifts;
     private GiftSelectListner listner;
 
-    public GiftAdapter(ArrayList<GiftModel> alGifts,GiftSelectListner listner) {
+    public GiftAdapter(List<SubModel> alGifts, GiftSelectListner listner) {
         this.alGifts = alGifts;
         this.listner = listner;
     }

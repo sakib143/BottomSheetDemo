@@ -16,13 +16,14 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class BottomSheetDialog  extends BottomSheetDialogFragment {
 
-    private ArrayList<MainModel> alMain = new ArrayList<>();
+    private ArrayList<MainModel> alMainTab = new ArrayList<>();
     private ArrayList<SubModel> alSubList = new ArrayList<>();
-    private ArrayList<String> alTotalCoins = new ArrayList<>();
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable
@@ -43,29 +44,14 @@ public class BottomSheetDialog  extends BottomSheetDialogFragment {
     }
 
     private void loadArrayList() {
-        int totalObj = Math.round(14/4);
-        int currentObjs = 1;
-
-        for(int i = 0; i < 15; i++) {
-
-            alSubList.add(new SubModel("Position is " + i ));
-
-            if(currentObjs <= totalObj){
-                if(alSubList.size() == 4) {
-                    currentObjs++;
-                    alMain.add(new MainModel(alSubList,"Title " + i ));
-                    alSubList = new ArrayList<>();
-                }
-            }else {
-                if(i == 14){
-                    alMain.add(new MainModel(alSubList, "Title " + i ));
-                }
-            }
+        //Loading sublist.
+        for (int i = 0; i <= 50; i++) {
+            alSubList.add(new SubModel("Position " + i));
         }
 
-        //Load total coins
-        for (int i = 1; i < 5; i++) {
-            alTotalCoins.add(" " + i );
+        //Loading main array.
+        for (int i = 1; i <= 5; i++) {
+            alMainTab.add(new MainModel(alSubList,"Tab " + i));
         }
     }
 
@@ -80,20 +66,20 @@ public class BottomSheetDialog  extends BottomSheetDialogFragment {
             Fragment fragment = new TabLayoutFragment();
             Bundle args = new Bundle();
 //            // Our object is just an integer :-P
-//            args.putInt(TabLayoutFragment.ARG_OBJECT, i + 1);
+            args.putSerializable("sublist",alSubList);
             fragment.setArguments(args);
             return fragment;
         }
 
         @Override
         public int getCount() {
-            return alMain.size();
+            return alMainTab.size();
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
 //            return "OBJECT " + (position + 1);
-            return alMain.get(position).getTabTitle();
+            return alMainTab.get(position).getTabTitle();
         }
     }
 

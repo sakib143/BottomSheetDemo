@@ -13,9 +13,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bottomsheetdemo.R;
 import com.example.bottomsheetdemo.adapter.GiftAdapter;
-import com.example.bottomsheetdemo.model.GiftModel;
+import com.example.bottomsheetdemo.model.SubModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GiftListFragment  extends Fragment {
 
@@ -23,7 +24,7 @@ public class GiftListFragment  extends Fragment {
 
     private RecyclerView rvGifts;
     private GiftAdapter giftAdapter;
-    private ArrayList<GiftModel> alGifts = new ArrayList<>();
+    private List<SubModel> alGifts = new ArrayList<>();
 
     @Nullable
     @Override
@@ -33,11 +34,9 @@ public class GiftListFragment  extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        Bundle args = getArguments();
-        Log.d("==>  " , "onViewCreated: ??? " + Integer.toString(args.getInt(ARG_OBJECT)) );
-        for (int i = 0; i < 8; i++) {
-            alGifts.add(new GiftModel("Position " + i, false,-1));
-        }
+
+        alGifts.addAll((ArrayList<SubModel>)getArguments().getSerializable("sublist"));
+        Log.d( "==> ", "onViewCreated: alGifts size in Gift list fragment ???? " + alGifts.size() );
 
         rvGifts = view.findViewById(R.id.rvGifts);
         giftAdapter = new GiftAdapter(alGifts, new GiftAdapter.GiftSelectListner() {
