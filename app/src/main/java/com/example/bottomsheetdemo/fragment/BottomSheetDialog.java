@@ -53,8 +53,6 @@ public class BottomSheetDialog  extends BottomSheetDialogFragment {
         for (int i = 1; i <= 5; i++) {
             alMainTab.add(new MainModel(alSubList,"Tab " + i));
         }
-
-
     }
 
 
