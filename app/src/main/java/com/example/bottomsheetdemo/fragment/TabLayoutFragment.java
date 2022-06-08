@@ -14,6 +14,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.bottomsheetdemo.R;
+import com.example.bottomsheetdemo.listner.MyTabListner;
 import com.example.bottomsheetdemo.model.SubModel;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -25,8 +26,9 @@ public class TabLayoutFragment  extends Fragment  {
 
     private ArrayList<SubModel> alSub = new ArrayList<>();
     private List<List<SubModel>> alSplitList = new ArrayList<>();
-
     private int partitionSize = 8;
+    private int mainArrayPosition = 0;
+    private MyTabListner callback;
 
     @Nullable
     @Override
@@ -36,26 +38,32 @@ public class TabLayoutFragment  extends Fragment  {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
         alSub.addAll((ArrayList<SubModel>)getArguments().getSerializable("sublist"));
-
-//        Log.d("==> ", "main array size is ??? " + alSub.size() );
-
+        mainArrayPosition = getArguments().getInt("main_position");
+        callback = (MyTabListner) getArguments().getSerializable("listner");
 
         alSplitList = splitArrayList(alSub,partitionSize);
-//        Log.d("==> ", "onViewCreated: temp array size is ??? " + alSplitList.size());
+
 
         for (int i = 0; i < alSplitList.size(); i++) {
-
-//            Log.d("==>","splite array size ??? " + alSplitList.get(i).size());
-
+//            Log.d("TAG ==> ", "createFragment: position is in loop ???" + i );
             DemoCollectionAdapter demoCollectionAdapter = new DemoCollectionAdapter(TabLayoutFragment.this);
+
             ViewPager2  viewPager = view.findViewById(R.id.pager);
+            viewPager.setOffscreenPageLimit(8);
             viewPager.setAdapter(demoCollectionAdapter);
 
             TabLayout into_tab_layout = view.findViewById(R.id.into_tab_layout);
             new TabLayoutMediator(into_tab_layout,viewPager, (tab, position) -> tab.setText("")).attach();
         }
+
+        callback = new MyTabListner() {
+            @Override
+            public void onClick(int mainArrayPosition, int subArrayPosition, int adapterPosition, boolean isSelected) {
+                Log.d(" ==> ", "onClick: main position " + mainArrayPosition +  " subArrayPosition " + subArrayPosition + " adapterPosition " + adapterPosition);
+            }
+        };
+
     }
 
     public class DemoCollectionAdapter extends FragmentStateAdapter {
@@ -67,10 +75,6 @@ public class TabLayoutFragment  extends Fragment  {
         @NonNull
         @Override
         public Fragment createFragment(int position) {
-
-
-            Log.d("TAG ==> ", "createFragment: position is ???" + position);
-
             // Return a NEW fragment instance in createFragment(int)
             Fragment fragment = new GiftListFragment();
             Bundle args = new Bundle();
@@ -78,7 +82,9 @@ public class TabLayoutFragment  extends Fragment  {
 //            args.putInt(GiftListFragment.ARG_OBJECT, position + 1);
 
             args.putSerializable("sublist", new ArrayList<SubModel>(alSplitList.get(position)));
-
+            args.putSerializable("main_position",mainArrayPosition);
+            args.putSerializable("sub_list_position", position);
+            args.putSerializable("listner",callback);
 
             fragment.setArguments(args);
             return fragment;

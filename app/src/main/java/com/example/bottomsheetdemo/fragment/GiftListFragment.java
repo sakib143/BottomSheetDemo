@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bottomsheetdemo.R;
 import com.example.bottomsheetdemo.adapter.GiftAdapter;
+import com.example.bottomsheetdemo.listner.MyTabListner;
 import com.example.bottomsheetdemo.model.SubModel;
 
 import java.util.ArrayList;
@@ -25,6 +26,9 @@ public class GiftListFragment  extends Fragment {
     private RecyclerView rvGifts;
     private GiftAdapter giftAdapter;
     private List<SubModel> alGifts = new ArrayList<>();
+    private int mainArrayPosition = 0;
+    private int sublistPosition = 0;
+    private MyTabListner callback;
 
     @Nullable
     @Override
@@ -33,10 +37,34 @@ public class GiftListFragment  extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("==>"," main array position  " + mainArrayPosition + " sub array position " + sublistPosition );
+
+        for (int i = 0; i < alGifts.size(); i++) {
+            alGifts.get(i).setSelected(false);
+        }
+        giftAdapter.notifyDataSetChanged();
+
+//        if(mainArrayPosition == BottomSheetDialog.MAIN_ARRAY_SELECTION && sublistPosition == BottomSheetDialog.SUB_ARRAY_SELECTION) {
+//            if(alGifts.get(BottomSheetDialog.ADAPTER_POSITION).isSelected()) {
+//                alGifts.get(BottomSheetDialog.ADAPTER_POSITION).setSelected(false);
+//                giftAdapter.notifyDataSetChanged();
+//            }
+//        }
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         alGifts.addAll((ArrayList<SubModel>)getArguments().getSerializable("sublist"));
-        Log.d( "==> ", "onViewCreated: alGifts size in Gift list fragment ???? " + alGifts.size() );
+        mainArrayPosition = getArguments().getInt("main_position");
+        sublistPosition = getArguments().getInt("sub_list_position");
+        callback = (MyTabListner) getArguments().getSerializable("listner");
+
+
+//        Log.d("==>"," main array position  " + mainArrayPosition + " sub array position " + sublistPosition );
+//        Log.d("==>"," isSelected() in zero position ???? " + alGifts.get(0).isSelected() );
 
         rvGifts = view.findViewById(R.id.rvGifts);
         giftAdapter = new GiftAdapter(alGifts, new GiftAdapter.GiftSelectListner() {
@@ -50,6 +78,7 @@ public class GiftListFragment  extends Fragment {
                     }
                     alGifts.get(position).setSelected(true);
                 }
+                callback.onClick(mainArrayPosition,sublistPosition,position, true);
                 giftAdapter.notifyDataSetChanged();
             }
         });

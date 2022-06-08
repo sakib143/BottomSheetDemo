@@ -1,13 +1,17 @@
 package com.example.bottomsheetdemo.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.lifecycle.Lifecycle;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bottomsheetdemo.MyViewPager;
 import com.example.bottomsheetdemo.R;
 import com.example.bottomsheetdemo.adapter.TotalCoinsAdapter;
+import com.example.bottomsheetdemo.listner.MyTabListner;
 import com.example.bottomsheetdemo.model.CoinSelectionModel;
 import com.example.bottomsheetdemo.model.MainModel;
 import com.example.bottomsheetdemo.model.SubModel;
@@ -32,7 +37,9 @@ public class BottomSheetDialog  extends BottomSheetDialogFragment {
     private ArrayList<CoinSelectionModel> alTotalCoins = new ArrayList<>();
     private RecyclerView rvTotalCoins;
     private TotalCoinsAdapter totalCoinsAdapter;
+    private MyTabListner callback;
 
+    public static int MAIN_ARRAY_SELECTION = 0, SUB_ARRAY_SELECTION = 0, ADAPTER_POSITION = 0 ;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable
@@ -45,7 +52,18 @@ public class BottomSheetDialog  extends BottomSheetDialogFragment {
         DemoCollectionPagerAdapter adapter = new DemoCollectionPagerAdapter(getChildFragmentManager());
 
         MyViewPager viewPager = v.findViewById(R.id.pager);
+        viewPager.setOffscreenPageLimit(8);
         viewPager.setAdapter(adapter);
+
+        callback = new MyTabListner() {
+            @Override
+            public void onClick(int mainArrayPosition, int subArrayPosition, int adapterPosition, boolean isSelected) {
+                MAIN_ARRAY_SELECTION = mainArrayPosition;
+                SUB_ARRAY_SELECTION = subArrayPosition;
+                ADAPTER_POSITION = adapterPosition;
+                Log.d("TAG ==> ", "onClick: mainArrayPosition " + mainArrayPosition + "subArrayPosition "  + subArrayPosition + " adapterPosition " + adapterPosition);
+            }
+        };
 
         tabLayout.setupWithViewPager(viewPager);
         return v;
@@ -53,13 +71,13 @@ public class BottomSheetDialog  extends BottomSheetDialogFragment {
 
     private void loadArrayList() {
         //Loading sublist.
-        for (int i = 0; i <= 50; i++) {
+        for (int i = 0; i <= 17; i++) {
             alSubList.add(new SubModel("Position " + i));
         }
 
         //Loading main array.
         for (int i = 1; i <= 5; i++) {
-            alMainTab.add(new MainModel(alSubList,"Tab " + i));
+            alMainTab.add(new MainModel(alSubList,"Tab " + i, i ));
         }
 
         //Load total coins
@@ -93,10 +111,15 @@ public class BottomSheetDialog  extends BottomSheetDialogFragment {
 
         @Override
         public Fragment getItem(int i) {
+
+            Log.d("TAG", "getItem: position  " + i );
+
             Fragment fragment = new TabLayoutFragment();
             Bundle args = new Bundle();
 //            // Our object is just an integer :-P
             args.putSerializable("sublist",alSubList);
+            args.putSerializable("main_position",i);
+            args.putSerializable("listner",callback);
             fragment.setArguments(args);
             return fragment;
         }
