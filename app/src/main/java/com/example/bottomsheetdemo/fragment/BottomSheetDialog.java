@@ -8,8 +8,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.bottomsheetdemo.MyViewPager;
 import com.example.bottomsheetdemo.R;
+import com.example.bottomsheetdemo.adapter.TotalCoinsAdapter;
+import com.example.bottomsheetdemo.model.CoinSelectionModel;
 import com.example.bottomsheetdemo.model.MainModel;
 import com.example.bottomsheetdemo.model.SubModel;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -23,15 +29,17 @@ public class BottomSheetDialog  extends BottomSheetDialogFragment {
 
     private ArrayList<MainModel> alMainTab = new ArrayList<>();
     private ArrayList<SubModel> alSubList = new ArrayList<>();
+    private ArrayList<CoinSelectionModel> alTotalCoins = new ArrayList<>();
+    private RecyclerView rvTotalCoins;
+    private TotalCoinsAdapter totalCoinsAdapter;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable
             ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_bottom_sheet, container, false);
-
+        rvTotalCoins = v.findViewById(R.id.rvTotalCoins);
         loadArrayList();
-
         TabLayout tabLayout = v.findViewById(R.id.tab_layout);
 
         DemoCollectionPagerAdapter adapter = new DemoCollectionPagerAdapter(getChildFragmentManager());
@@ -53,6 +61,28 @@ public class BottomSheetDialog  extends BottomSheetDialogFragment {
         for (int i = 1; i <= 5; i++) {
             alMainTab.add(new MainModel(alSubList,"Tab " + i));
         }
+
+        //Load total coins
+        for (int i = 1; i < 5; i++) {
+            alTotalCoins.add(new CoinSelectionModel(i + "", i, false));
+        }
+        totalCoinsAdapter = new TotalCoinsAdapter(alTotalCoins, new TotalCoinsAdapter.CoinSelectListner() {
+            @Override
+            public void onSelectedPosition(int position) {
+                if (alTotalCoins.get(position).isSelected()) {
+                    alTotalCoins.get(position).setSelected(true);
+                } else {
+                    for (int i = 0; i < alTotalCoins.size(); i++) {
+                        alTotalCoins.get(i).setSelected(false);
+                    }
+                    alTotalCoins.get(position).setSelected(true);
+                }
+                totalCoinsAdapter.notifyDataSetChanged();
+            }
+        });
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 1, LinearLayoutManager.HORIZONTAL, false);
+        rvTotalCoins.setLayoutManager(mLayoutManager);
+        rvTotalCoins.setAdapter(totalCoinsAdapter);
     }
 
 
