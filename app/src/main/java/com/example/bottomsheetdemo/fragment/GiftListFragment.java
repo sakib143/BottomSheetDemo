@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bottomsheetdemo.R;
 import com.example.bottomsheetdemo.adapter.GiftAdapter;
 import com.example.bottomsheetdemo.listner.MyTabListner;
+import com.example.bottomsheetdemo.listner.SetCoinCountListner;
 import com.example.bottomsheetdemo.model.SubModel;
 
 import java.util.ArrayList;
@@ -26,9 +28,10 @@ public class GiftListFragment  extends Fragment {
     private RecyclerView rvGifts;
     private GiftAdapter giftAdapter;
     private List<SubModel> alGifts = new ArrayList<>();
-    private int mainArrayPosition = 0;
-    private int sublistPosition = 0;
+    private int currentTabPosition = 0;
+    private int currentItemPosition = 0;
     private MyTabListner callback;
+    private SetCoinCountListner countListner;
 
     @Nullable
     @Override
@@ -39,29 +42,46 @@ public class GiftListFragment  extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("==>"," main array position  " + mainArrayPosition + " sub array position " + sublistPosition );
+        int selectedTabPosition = BottomSheetDialog.MAIN_ARRAY_SELECTION;
+        int selectedItemPosition = BottomSheetDialog.SUB_ARRAY_SELECTION;
+
+        Log.d("==>"," Tab Array position  " + currentTabPosition + " Item array position " + currentItemPosition );
+        Log.d("==>"," Selected Tab position  " + selectedTabPosition + " Selected Item Araay position " + selectedItemPosition );
 
         for (int i = 0; i < alGifts.size(); i++) {
-            alGifts.get(i).setSelected(false);
+            if (alGifts.get(i).isSelected()) {
+                if(currentTabPosition != selectedTabPosition) {
+                    alGifts.get(i).setSelected(false);
+                } else if(selectedItemPosition != currentItemPosition) {
+                    alGifts.get(i).setSelected(false);
+                }
+            }
         }
         giftAdapter.notifyDataSetChanged();
-
-//        if(mainArrayPosition == BottomSheetDialog.MAIN_ARRAY_SELECTION && sublistPosition == BottomSheetDialog.SUB_ARRAY_SELECTION) {
-//            if(alGifts.get(BottomSheetDialog.ADAPTER_POSITION).isSelected()) {
-//                alGifts.get(BottomSheetDialog.ADAPTER_POSITION).setSelected(false);
-//                giftAdapter.notifyDataSetChanged();
-//            }
-//        }
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         alGifts.addAll((ArrayList<SubModel>)getArguments().getSerializable("sublist"));
-        mainArrayPosition = getArguments().getInt("main_position");
-        sublistPosition = getArguments().getInt("sub_list_position");
+        currentTabPosition = getArguments().getInt("main_position");
+        currentItemPosition = getArguments().getInt("sub_list_position");
         callback = (MyTabListner) getArguments().getSerializable("listner");
+        countListner = (SetCoinCountListner) getArguments().getSerializable("count_listner");
 
+
+        countListner = new SetCoinCountListner() {
+            @Override
+            public void setCount(String count, int tabPosition, int indicatorPosition, int adapterPosition) {
+
+                Toast.makeText(getActivity(), "Gift List Fragment is calling !!!! ", Toast.LENGTH_SHORT).show();
+
+//                alGifts.get(adapterPosition).setTotalCounts(count);
+//                giftAdapter.notifyDataSetChanged();
+            }
+        };
+
+//        callback.onClick(mainArrayPosition,0,0, true);
 
 //        Log.d("==>"," main array position  " + mainArrayPosition + " sub array position " + sublistPosition );
 //        Log.d("==>"," isSelected() in zero position ???? " + alGifts.get(0).isSelected() );
@@ -72,13 +92,14 @@ public class GiftListFragment  extends Fragment {
             public void onSelectedPosition(int position) {
                 if(alGifts.get(position).isSelected()) {
                     alGifts.get(position).setSelected(false);
+                    callback.onClick(-1, -1, -1, true);
                 } else {
                     for (int i = 0; i < alGifts.size(); i++) {
                         alGifts.get(i).setSelected(false);
                     }
                     alGifts.get(position).setSelected(true);
+                    callback.onClick(currentTabPosition,currentItemPosition,position, true);
                 }
-                callback.onClick(mainArrayPosition,sublistPosition,position, true);
                 giftAdapter.notifyDataSetChanged();
             }
         });

@@ -4,7 +4,16 @@ public class SubModel {
 
     private String name;
     private boolean isSelected;
-    private int selectedPageNumber = -1;
+
+    public String getTotalCounts() {
+        return totalCounts;
+    }
+
+    public void setTotalCounts(String totalCounts) {
+        this.totalCounts = totalCounts;
+    }
+
+    private String totalCounts;
 
     public SubModel(String name) {
         this.name = name;

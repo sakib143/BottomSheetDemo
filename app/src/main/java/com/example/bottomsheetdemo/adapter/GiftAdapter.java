@@ -5,6 +5,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,6 +34,9 @@ public class GiftAdapter extends RecyclerView.Adapter<GiftAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
+
+        viewHolder.tvSelectedCoins.setText(alGifts.get(position).getTotalCounts());
+
         if(alGifts.get(position).isSelected()) {
             viewHolder.rootLayout.setBackground(ContextCompat.getDrawable(viewHolder.ivImages.getContext(), R.drawable.bg_gift_selected));
         } else {
@@ -54,10 +59,12 @@ public class GiftAdapter extends RecyclerView.Adapter<GiftAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView ivImages;
         private RelativeLayout rootLayout;
+        private TextView tvSelectedCoins;
         public ViewHolder(View view) {
             super(view);
             ivImages = view.findViewById(R.id.ivImages);
             rootLayout = view.findViewById(R.id.rootLayout);
+            tvSelectedCoins = view.findViewById(R.id.tvSelectedCoins);
         }
     }
 
