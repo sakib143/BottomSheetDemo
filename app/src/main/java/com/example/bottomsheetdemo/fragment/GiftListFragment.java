@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bottomsheetdemo.R;
 import com.example.bottomsheetdemo.adapter.GiftAdapter;
 import com.example.bottomsheetdemo.listner.MyTabListner;
+import com.example.bottomsheetdemo.model.GiftModel;
 import com.example.bottomsheetdemo.model.SubModel;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import java.util.List;
 public class GiftListFragment  extends Fragment {
     private RecyclerView rvGifts;
     private GiftAdapter giftAdapter;
-    private List<SubModel> alGifts = new ArrayList<>();
+    private List<GiftModel.Tab.CategoryItem> alGifts = new ArrayList<>();
     private int currentTabPosition = 0;
     private int currentItemPosition = 0;
     private MyTabListner callback;
@@ -57,7 +58,7 @@ public class GiftListFragment  extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        alGifts.addAll((ArrayList<SubModel>)getArguments().getSerializable("sublist"));
+        alGifts.addAll((ArrayList<GiftModel.Tab.CategoryItem>)getArguments().getSerializable("sublist"));
         currentTabPosition = getArguments().getInt("main_position");
         currentItemPosition = getArguments().getInt("sub_list_position");
         callback = (MyTabListner) getArguments().getSerializable("listner");
@@ -82,7 +83,7 @@ public class GiftListFragment  extends Fragment {
     }
 
     public void callUpdatePrice (String count) {
-        alGifts.get(BottomSheetDialog.ADAPTER_POSITION).setTotalCounts(count);
+//        alGifts.get(BottomSheetDialog.ADAPTER_POSITION).setTotalCounts(count);
         giftAdapter.notifyDataSetChanged();
     }
 

@@ -2,6 +2,7 @@ package com.example.bottomsheetdemo.fragment;
 
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.bottomsheetdemo.R;
 import com.example.bottomsheetdemo.listner.MyTabListner;
+import com.example.bottomsheetdemo.model.GiftModel;
 import com.example.bottomsheetdemo.model.SubModel;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -24,8 +26,9 @@ import java.util.List;
 
 public class TabLayoutFragment  extends Fragment  {
 
-    private ArrayList<SubModel> alSub = new ArrayList<>();
-    private List<List<SubModel>> alSplitList = new ArrayList<>();
+    private ArrayList<GiftModel.Tab> alMainTab = new ArrayList<>();
+    private ArrayList<GiftModel.Tab.CategoryItem> alSub = new ArrayList<>();
+    private List<List<GiftModel.Tab.CategoryItem>> alSplitList = new ArrayList<>();
     private int partitionSize = 8;
     private int mainArrayPosition = 0;
     private MyTabListner callback;
@@ -39,23 +42,41 @@ public class TabLayoutFragment  extends Fragment  {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        alSub.addAll((ArrayList<SubModel>)getArguments().getSerializable("sublist"));
+        alMainTab.addAll((ArrayList<GiftModel.Tab>)getArguments().getSerializable("main_list"));
         mainArrayPosition = getArguments().getInt("main_position");
         callback = (MyTabListner) getArguments().getSerializable("listner");
 
+        //Load sub array or viewpager array
+        alSub = new ArrayList<>();
+        alSub.addAll(alMainTab.get(0).getCategoryItem());
+
         alSplitList = splitArrayList(alSub,partitionSize);
 
-        for (int i = 0; i < alSplitList.size(); i++) {
-//            Log.d("TAG ==> ", "createFragment: position is in loop ???" + i );
-            alGiftsFragment.add(new GiftListFragment());
-            DemoCollectionAdapter demoCollectionAdapter = new DemoCollectionAdapter(TabLayoutFragment.this);
+        if(alSub.size() > 8 ) {
+            alSplitList = splitArrayList(alSub,partitionSize);
+            for (int i = 0; i < alSplitList.size(); i++) {
+                alGiftsFragment.add(new GiftListFragment());
+                DemoCollectionAdapter demoCollectionAdapter = new DemoCollectionAdapter(TabLayoutFragment.this);
 
-            ViewPager2  viewPager = view.findViewById(R.id.pager);
-            viewPager.setOffscreenPageLimit(1);
-            viewPager.setAdapter(demoCollectionAdapter);
+                ViewPager2  viewPager = view.findViewById(R.id.pager);
+                viewPager.setOffscreenPageLimit(1);
+                viewPager.setAdapter(demoCollectionAdapter);
 
-            TabLayout into_tab_layout = view.findViewById(R.id.into_tab_layout);
-            new TabLayoutMediator(into_tab_layout,viewPager, (tab, position) -> tab.setText("")).attach();
+                TabLayout into_tab_layout = view.findViewById(R.id.into_tab_layout);
+                new TabLayoutMediator(into_tab_layout,viewPager, (tab, position) -> tab.setText("")).attach();
+            }
+        } else {
+            for (int i = 0; i < alSub.size(); i++) {
+                alGiftsFragment.add(new GiftListFragment());
+                DemoCollectionAdapter demoCollectionAdapter = new DemoCollectionAdapter(TabLayoutFragment.this);
+
+                ViewPager2  viewPager = view.findViewById(R.id.pager);
+                viewPager.setOffscreenPageLimit(1);
+                viewPager.setAdapter(demoCollectionAdapter);
+
+                TabLayout into_tab_layout = view.findViewById(R.id.into_tab_layout);
+                new TabLayoutMediator(into_tab_layout,viewPager, (tab, position) -> tab.setText("")).attach();
+            }
         }
     }
 
@@ -70,7 +91,12 @@ public class TabLayoutFragment  extends Fragment  {
         public Fragment createFragment(int position) {
             GiftListFragment fragment = alGiftsFragment.get(position);
             Bundle args = new Bundle();
-            args.putSerializable("sublist", new ArrayList<SubModel>(alSplitList.get(position)));
+//            args.putSerializable("sublist", new ArrayList<GiftModel.Tab.CategoryItem>(alSplitList.get(position)));
+            if(alSub.size() > 8 ) {
+                args.putSerializable("sublist", new ArrayList<GiftModel.Tab.CategoryItem>(alSplitList.get(position)));
+            } else {
+                args.putSerializable("sublist", new ArrayList<GiftModel.Tab.CategoryItem>(alSub));
+            }
             args.putSerializable("main_position",mainArrayPosition);
             args.putSerializable("sub_list_position", position);
             args.putSerializable("listner",callback);
@@ -80,7 +106,11 @@ public class TabLayoutFragment  extends Fragment  {
 
         @Override
         public int getItemCount() {
-            return alSplitList.size();
+//            return alSplitList.size();
+            if(alSub.size() > 8 ) {
+                return alSplitList.size();
+            }
+            return 1;
         }
     }
 

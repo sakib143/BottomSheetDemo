@@ -1,5 +1,6 @@
 package com.example.bottomsheetdemo.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bottomsheetdemo.R;
+import com.example.bottomsheetdemo.model.GiftModel;
 import com.example.bottomsheetdemo.model.SubModel;
 
 import java.util.List;
@@ -18,12 +20,13 @@ import java.util.List;
 
 public class GiftAdapter extends RecyclerView.Adapter<GiftAdapter.ViewHolder> {
 
-    private List<SubModel> alGifts;
+    private List<GiftModel.Tab.CategoryItem> alGifts;
     private GiftSelectListner listner;
 
-    public GiftAdapter(List<SubModel> alGifts, GiftSelectListner listner) {
+    public GiftAdapter(List<GiftModel.Tab.CategoryItem> alGifts, GiftSelectListner listner) {
         this.alGifts = alGifts;
         this.listner = listner;
+        Log.d("TAG ==>"  , "GiftAdapter: alGifts size is ???  " + alGifts.size() );
     }
 
     @Override

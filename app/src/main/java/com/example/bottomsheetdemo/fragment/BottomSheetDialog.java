@@ -1,10 +1,13 @@
 package com.example.bottomsheetdemo.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -19,20 +22,28 @@ import com.example.bottomsheetdemo.R;
 import com.example.bottomsheetdemo.adapter.TotalCoinsAdapter;
 import com.example.bottomsheetdemo.listner.MyTabListner;
 import com.example.bottomsheetdemo.model.CoinSelectionModel;
+import com.example.bottomsheetdemo.model.GiftModel;
 import com.example.bottomsheetdemo.model.MainModel;
 import com.example.bottomsheetdemo.model.SubModel;
+import com.example.bottomsheetdemo.retrofit.RetrofitClient;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 public class BottomSheetDialog  extends BottomSheetDialogFragment {
 
-    private ArrayList<MainModel> alMainTab = new ArrayList<>();
-    private ArrayList<SubModel> alSubList = new ArrayList<>();
+    private ArrayList<GiftModel.Tab> alMainTab = new ArrayList<>();
+    private ArrayList<GiftModel.Tab.CategoryItem> alSubList = new ArrayList<>();
+
     private ArrayList<CoinSelectionModel> alTotalCoins = new ArrayList<>();
+
     private RecyclerView rvTotalCoins;
     private TotalCoinsAdapter totalCoinsAdapter;
     private MyTabListner callback;
@@ -48,6 +59,12 @@ public class BottomSheetDialog  extends BottomSheetDialogFragment {
         View v = inflater.inflate(R.layout.fragment_bottom_sheet, container, false);
         rvTotalCoins = v.findViewById(R.id.rvTotalCoins);
 
+        makeAPIcall(v);
+
+        return v;
+    }
+
+    private void setData(View v) {
         loadArrayList();
         TabLayout tabLayout = v.findViewById(R.id.tab_layout);
 
@@ -69,21 +86,20 @@ public class BottomSheetDialog  extends BottomSheetDialogFragment {
         };
 
         tabLayout.setupWithViewPager(viewPager);
-        return v;
     }
 
     private void loadArrayList() {
-        //Loading sublist.
-        for (int i = 0; i <= 17; i++) {
-            alSubList.add(new SubModel("Position " + i));
-        }
+//        //Loading sublist.
+//        for (int i = 0; i <= 17; i++) {
+//            alSubList.add(new SubModel("Position " + i));
+//        }
 
+//
         //Loading main array.
-        for (int i = 1; i <= 5; i++) {
-            alMainTab.add(new MainModel(alSubList,"Tab " + i, i ));
-            tablayoutList.add(new TabLayoutFragment());
-        }
-
+//        for (int i = 1; i <= 5; i++) {
+//            alMainTab.add(new MainModel(alSubList,"Tab " + i, i ));
+//            tablayoutList.add(new TabLayoutFragment());
+//        }
         //Load total coins
         for (int i = 1; i < 5; i++) {
             alTotalCoins.add(new CoinSelectionModel(i + "", i, false));
@@ -120,7 +136,7 @@ public class BottomSheetDialog  extends BottomSheetDialogFragment {
             TabLayoutFragment fragment = tablayoutList.get(i);
             Bundle args = new Bundle();
 //            // Our object is just an integer :-P
-            args.putSerializable("sublist",alSubList);
+            args.putSerializable("main_list",alMainTab);
             args.putSerializable("main_position",i);
             args.putSerializable("listner",callback);
             fragment.setArguments(args);
@@ -134,8 +150,47 @@ public class BottomSheetDialog  extends BottomSheetDialogFragment {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return alMainTab.get(position).getTabTitle();
+            return alMainTab.get(position).getCategoryName();
         }
+    }
+
+    private void makeAPIcall(View v) {
+        Call<GiftModel> call = RetrofitClient.getInstance().getMyApi().getGiftsData();
+        call.enqueue(new Callback<GiftModel>() {
+            @Override
+            public void onResponse(Call<GiftModel> call, Response<GiftModel> response) {
+
+                GiftModel model = response.body();
+
+                //Load array for tabs
+                alMainTab = new ArrayList<>();
+                alMainTab.addAll(model.getTab());
+
+//                Toast.makeText(getActivity(),"Sub array size is " + alMainTab.get(0).getCategoryItem().size(), Toast.LENGTH_LONG).show();
+
+                alSubList.addAll(alMainTab.get(0).getCategoryItem());
+
+//                alSubList = new ArrayList<>();
+//                alSubList.addAll(alMainTab.get(0).CategoryItem);
+
+                for (int i = 0; i < alMainTab.size(); i++) {
+                    tablayoutList.add(new TabLayoutFragment());
+                }
+
+//                //Load subarray for viewpagers
+//                alSubList = new ArrayList<>();
+//                for (int i = 0; i < alMainTab.size(); i++) {
+//                    alSubList.addAll(alMainTab.get(i).getCategoryItem());
+//                }
+
+                setData(v);
+            }
+
+            @Override
+            public void onFailure(Call<GiftModel> call, Throwable t) {
+
+            }
+        });
     }
 
 }

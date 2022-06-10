@@ -3,11 +3,22 @@ package com.example.bottomsheetdemo.activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.bottomsheetdemo.R;
 import com.example.bottomsheetdemo.fragment.BottomSheetDialog;
+import com.example.bottomsheetdemo.model.GiftModel;
+import com.example.bottomsheetdemo.retrofit.RetrofitClient;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
