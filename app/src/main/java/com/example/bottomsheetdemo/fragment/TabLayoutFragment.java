@@ -2,7 +2,6 @@ package com.example.bottomsheetdemo.fragment;
 
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.bottomsheetdemo.R;
 import com.example.bottomsheetdemo.listner.MyTabListner;
-import com.example.bottomsheetdemo.listner.SetCoinCountListner;
 import com.example.bottomsheetdemo.model.SubModel;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -24,18 +22,14 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TabLayoutFragment  extends Fragment implements  SetCoinCountListner {
+public class TabLayoutFragment  extends Fragment  {
 
     private ArrayList<SubModel> alSub = new ArrayList<>();
     private List<List<SubModel>> alSplitList = new ArrayList<>();
     private int partitionSize = 8;
     private int mainArrayPosition = 0;
     private MyTabListner callback;
-    private SetCoinCountListner countListner;
-//
-//    public TabLayoutFragment(SetCoinCountListner countListner) {
-//        this.countListner =  countListner;
-//    }
+    private List<GiftListFragment> alGiftsFragment = new ArrayList<>();
 
     @Nullable
     @Override
@@ -48,21 +42,12 @@ public class TabLayoutFragment  extends Fragment implements  SetCoinCountListner
         alSub.addAll((ArrayList<SubModel>)getArguments().getSerializable("sublist"));
         mainArrayPosition = getArguments().getInt("main_position");
         callback = (MyTabListner) getArguments().getSerializable("listner");
-//        countListner = (SetCoinCountListner) getArguments().getSerializable("count_listner");
-
-        countListner = this;
 
         alSplitList = splitArrayList(alSub,partitionSize);
 
-//        countListner = new SetCoinCountListner() {
-//            @Override
-//            public void setCount(String count, int tabPosition, int indicatorPosition, int adapterPosition) {
-//                Toast.makeText(getActivity(), "Tab layout fragment is calling !!!!", Toast.LENGTH_SHORT).show();
-//            }
-//        };
-
         for (int i = 0; i < alSplitList.size(); i++) {
 //            Log.d("TAG ==> ", "createFragment: position is in loop ???" + i );
+            alGiftsFragment.add(new GiftListFragment());
             DemoCollectionAdapter demoCollectionAdapter = new DemoCollectionAdapter(TabLayoutFragment.this);
 
             ViewPager2  viewPager = view.findViewById(R.id.pager);
@@ -74,11 +59,6 @@ public class TabLayoutFragment  extends Fragment implements  SetCoinCountListner
         }
     }
 
-    @Override
-    public void setCount(String count, int tabPosition, int indicatorPosition, int adapterPosition) {
-        Toast.makeText(getActivity(), "Tab layout fragment is calling !!!!", Toast.LENGTH_SHORT).show();
-    }
-
     public class DemoCollectionAdapter extends FragmentStateAdapter {
 
         public DemoCollectionAdapter(Fragment fragment) {
@@ -88,18 +68,12 @@ public class TabLayoutFragment  extends Fragment implements  SetCoinCountListner
         @NonNull
         @Override
         public Fragment createFragment(int position) {
-            // Return a NEW fragment instance in createFragment(int)
-            Fragment fragment = new GiftListFragment();
+            GiftListFragment fragment = alGiftsFragment.get(position);
             Bundle args = new Bundle();
-            // Our object is just an integer :-P
-//            args.putInt(GiftListFragment.ARG_OBJECT, position + 1);
-
             args.putSerializable("sublist", new ArrayList<SubModel>(alSplitList.get(position)));
             args.putSerializable("main_position",mainArrayPosition);
             args.putSerializable("sub_list_position", position);
             args.putSerializable("listner",callback);
-            args.putSerializable("count_listner",countListner);
-
             fragment.setArguments(args);
             return fragment;
         }
@@ -120,6 +94,10 @@ public class TabLayoutFragment  extends Fragment implements  SetCoinCountListner
             chunkList.add(list.subList(i, i + chunkSize >= list.size() ? list.size()-1 : i + chunkSize));
         }
         return chunkList;
+    }
+
+    public void callUpdatePrice(String count) {
+        alGiftsFragment.get(0).callUpdatePrice(count);
     }
 
 }

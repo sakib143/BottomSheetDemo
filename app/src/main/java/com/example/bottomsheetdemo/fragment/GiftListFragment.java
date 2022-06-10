@@ -15,23 +15,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bottomsheetdemo.R;
 import com.example.bottomsheetdemo.adapter.GiftAdapter;
 import com.example.bottomsheetdemo.listner.MyTabListner;
-import com.example.bottomsheetdemo.listner.SetCoinCountListner;
 import com.example.bottomsheetdemo.model.SubModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GiftListFragment  extends Fragment {
-
-    public static final String ARG_OBJECT = "object";
-
     private RecyclerView rvGifts;
     private GiftAdapter giftAdapter;
     private List<SubModel> alGifts = new ArrayList<>();
     private int currentTabPosition = 0;
     private int currentItemPosition = 0;
     private MyTabListner callback;
-    private SetCoinCountListner countListner;
 
     @Nullable
     @Override
@@ -62,30 +57,10 @@ public class GiftListFragment  extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
         alGifts.addAll((ArrayList<SubModel>)getArguments().getSerializable("sublist"));
         currentTabPosition = getArguments().getInt("main_position");
         currentItemPosition = getArguments().getInt("sub_list_position");
         callback = (MyTabListner) getArguments().getSerializable("listner");
-        countListner = (SetCoinCountListner) getArguments().getSerializable("count_listner");
-
-
-        countListner = new SetCoinCountListner() {
-            @Override
-            public void setCount(String count, int tabPosition, int indicatorPosition, int adapterPosition) {
-
-                Toast.makeText(getActivity(), "Gift List Fragment is calling !!!! ", Toast.LENGTH_SHORT).show();
-
-//                alGifts.get(adapterPosition).setTotalCounts(count);
-//                giftAdapter.notifyDataSetChanged();
-            }
-        };
-
-//        callback.onClick(mainArrayPosition,0,0, true);
-
-//        Log.d("==>"," main array position  " + mainArrayPosition + " sub array position " + sublistPosition );
-//        Log.d("==>"," isSelected() in zero position ???? " + alGifts.get(0).isSelected() );
-
         rvGifts = view.findViewById(R.id.rvGifts);
         giftAdapter = new GiftAdapter(alGifts, new GiftAdapter.GiftSelectListner() {
             @Override
@@ -105,4 +80,10 @@ public class GiftListFragment  extends Fragment {
         });
         rvGifts.setAdapter(giftAdapter);
     }
+
+    public void callUpdatePrice (String count) {
+        alGifts.get(BottomSheetDialog.ADAPTER_POSITION).setTotalCounts(count);
+        giftAdapter.notifyDataSetChanged();
+    }
+
 }

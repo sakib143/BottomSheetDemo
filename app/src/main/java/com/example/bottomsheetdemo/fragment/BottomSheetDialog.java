@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -19,7 +18,6 @@ import com.example.bottomsheetdemo.MyViewPager;
 import com.example.bottomsheetdemo.R;
 import com.example.bottomsheetdemo.adapter.TotalCoinsAdapter;
 import com.example.bottomsheetdemo.listner.MyTabListner;
-import com.example.bottomsheetdemo.listner.SetCoinCountListner;
 import com.example.bottomsheetdemo.model.CoinSelectionModel;
 import com.example.bottomsheetdemo.model.MainModel;
 import com.example.bottomsheetdemo.model.SubModel;
@@ -27,9 +25,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
-public class BottomSheetDialog  extends BottomSheetDialogFragment implements SetCoinCountListner {
+public class BottomSheetDialog  extends BottomSheetDialogFragment {
 
     private ArrayList<MainModel> alMainTab = new ArrayList<>();
     private ArrayList<SubModel> alSubList = new ArrayList<>();
@@ -37,29 +36,17 @@ public class BottomSheetDialog  extends BottomSheetDialogFragment implements Set
     private RecyclerView rvTotalCoins;
     private TotalCoinsAdapter totalCoinsAdapter;
     private MyTabListner callback;
-    private SetCoinCountListner countListner;
 
     public static int MAIN_ARRAY_SELECTION = -1 ;
     public static int SUB_ARRAY_SELECTION = -1;
     public static int ADAPTER_POSITION = -1;
 
+    private List<TabLayoutFragment> tablayoutList = new ArrayList<>();
+
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable
-            ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_bottom_sheet, container, false);
         rvTotalCoins = v.findViewById(R.id.rvTotalCoins);
-
-        countListner = this;
-
-//        countListner = new SetCoinCountListner() {
-//            @Override
-//            public void setCount(String count, int tabPosition, int indicatorPosition, int adapterPosition) {
-//                Toast.makeText(getActivity(), "Bottomsheet is calling !!!! ", Toast.LENGTH_SHORT).show();
-//            }
-//        };
-
-        // A <-- B
-        // A --> B
 
         loadArrayList();
         TabLayout tabLayout = v.findViewById(R.id.tab_layout);
@@ -94,6 +81,7 @@ public class BottomSheetDialog  extends BottomSheetDialogFragment implements Set
         //Loading main array.
         for (int i = 1; i <= 5; i++) {
             alMainTab.add(new MainModel(alSubList,"Tab " + i, i ));
+            tablayoutList.add(new TabLayoutFragment());
         }
 
         //Load total coins
@@ -110,7 +98,9 @@ public class BottomSheetDialog  extends BottomSheetDialogFragment implements Set
                         alTotalCoins.get(i).setSelected(false);
                     }
                     alTotalCoins.get(position).setSelected(true);
-                    countListner.setCount(alTotalCoins.get(position).getName(),MAIN_ARRAY_SELECTION,SUB_ARRAY_SELECTION,ADAPTER_POSITION);
+                    if(MAIN_ARRAY_SELECTION != -1 && SUB_ARRAY_SELECTION != -1 && ADAPTER_POSITION != -1) {
+                        tablayoutList.get(MAIN_ARRAY_SELECTION).callUpdatePrice(alTotalCoins.get(position).getName());
+                    }
                 }
                 totalCoinsAdapter.notifyDataSetChanged();
             }
@@ -120,12 +110,6 @@ public class BottomSheetDialog  extends BottomSheetDialogFragment implements Set
         rvTotalCoins.setAdapter(totalCoinsAdapter);
     }
 
-    @Override
-    public void setCount(String count, int tabPosition, int indicatorPosition, int adapterPosition) {
-       // Toast.makeText(getActivity(), "Bottomsheet is calling !!!! ", Toast.LENGTH_SHORT).show();
-    }
-
-
     public class DemoCollectionPagerAdapter extends FragmentStatePagerAdapter {
         public DemoCollectionPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -133,16 +117,12 @@ public class BottomSheetDialog  extends BottomSheetDialogFragment implements Set
 
         @Override
         public Fragment getItem(int i) {
-
-            Log.d("TAG", "getItem: position  " + i );
-
-            TabLayoutFragment fragment = new TabLayoutFragment();
+            TabLayoutFragment fragment = tablayoutList.get(i);
             Bundle args = new Bundle();
 //            // Our object is just an integer :-P
             args.putSerializable("sublist",alSubList);
             args.putSerializable("main_position",i);
             args.putSerializable("listner",callback);
-            args.putSerializable("count_listner",countListner);
             fragment.setArguments(args);
             return fragment;
         }
@@ -154,7 +134,6 @@ public class BottomSheetDialog  extends BottomSheetDialogFragment implements Set
 
         @Override
         public CharSequence getPageTitle(int position) {
-//            return "OBJECT " + (position + 1);
             return alMainTab.get(position).getTabTitle();
         }
     }
